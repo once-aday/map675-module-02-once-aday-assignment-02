@@ -1,0 +1,19 @@
+{
+  "name": "map675-module-02-once-aday-assignment-02",
+  "version": "1.0.0",
+  "description": "module 2 assignment 2",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/once-aday/map675-module-02-once-aday-assignment-02.git"
+  },
+  "author": "drocco",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/once-aday/map675-module-02-once-aday-assignment-02/issues"
+  },
+  "homepage": "https://github.com/once-aday/map675-module-02-once-aday-assignment-02#readme"
+}
