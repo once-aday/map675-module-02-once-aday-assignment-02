@@ -42,7 +42,7 @@ MapUnitPolygon Attributes:
 
 Field Name | Description
 ---------- | -----------
-REF_ID_COD | Reference Id
+REF_ID_COD | Unqie Id Code For Original Ref Map
 MAP_UNIT_L | Map unit label
 MAP_UNIT_N | Map unit name
 G_MRG_U_L | Geol. Merge Unit; combines original map units into 7 gen. classifications
@@ -51,7 +51,7 @@ AGE_NAME | Age of Merge Unit
 TERRANE_GR | Stratigraphic Name (formally or informally)
 FORMATION | Stratigraphic Formation Name
 MEMBER | Stratigraphic Member
-UNIT : Stratigraphic unit name
+UNIT | Stratigraphic unit name
 G_ROCK_TYP | Characteristic rock type for for Geol. Merge Unit
 LITH_M_U_L | Label for lithologic merge unit
 LITH_GEN_U | Lithologic general unit
@@ -180,7 +180,8 @@ I want to reduce the complexity of the geologic data, so as to make bring it clo
 mapshaper coos_geology.json -dissolve fields=GN_LITH_TY -o coos_geology_gnlith_disslv.json
 ```
 
-```mapshaper coos_geology.json -dissolve fields=G_ROCK_TYP -o coos_geology_grocktp_disslv.json
+```
+mapshaper coos_geology.json -dissolve fields=G_ROCK_TYP -o coos_geology_grocktp_disslv.json
 ```
 
 Rock type gives more detail and is more interesting.
