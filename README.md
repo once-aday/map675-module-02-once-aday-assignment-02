@@ -188,7 +188,8 @@ Rock type gives more detail and is more interesting.
 
 **Compare/Join Geology data to Native America Land**
 
-```mapshaper indg_territories.json -join coos_geology_grocktp_disslv.json -calc 'rock_types = collect(G_ROCK_TYP)' -o indg_ter_rock_type.json
+```
+mapshaper indg_territories.json -join coos_geology_grocktp_disslv.json -calc 'rock_types = collect(G_ROCK_TYP)' -o indg_ter_rock_type.json
 ```
 
 I'm having issues joining the two and maintaining all the rocktypes, it seems to only give it one.
