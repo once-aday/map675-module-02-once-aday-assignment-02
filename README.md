@@ -40,24 +40,26 @@ The layer MapUnitPolygon is the major polygon layer that contains the geologic u
 
 MapUnitPolygon Attributes:
 
-REF_ID_COD
-MAP_UNIT_L : Map unit label
-MAP_UNIT_N : Map unit name
-G_MRG_U_L : Geol. Merge Unit; combines original map units into 7 gen. classifications
-GEO_GENL_U : Geol. Merge Unit expressed by Genesis of the unit
-AGE_NAME : Age of Merge Unit
-TERRANE_GR : Stratigraphic Name (formally or informally)
-FORMATION : Stratigraphic Formation Name
-MEMBER : Stratigraphic Member
+Field Name | Description
+---------- | -----------
+REF_ID_COD | Reference Id
+MAP_UNIT_L | Map unit label
+MAP_UNIT_N | Map unit name
+G_MRG_U_L | Geol. Merge Unit; combines original map units into 7 gen. classifications
+GEO_GENL_U | Geol. Merge Unit expressed by Genesis of the unit
+AGE_NAME | Age of Merge Unit
+TERRANE_GR | Stratigraphic Name (formally or informally)
+FORMATION | Stratigraphic Formation Name
+MEMBER | Stratigraphic Member
 UNIT : Stratigraphic unit name
-G_ROCK_TYP : Characteristic rock type for for Geol. Merge Unit
-LITH_M_U_L : Label for lithologic merge unit
-LITH_GEN_U : Lithologic general unit
-LTH_RK_TYP : Lithologic Rock Type
-LAYERING : Layering/Rock stratum info from original source data for lithologic merge unit
-CR_GRN_SIZ : Crystal Grain/Size
-GETEC_PROP : Geotechnical Properties, Rock,Structural props for Lithologic merge units
-GN_LITH_TY : General Lithology Type
+G_ROCK_TYP | Characteristic rock type for for Geol. Merge Unit
+LITH_M_U_L | Label for lithologic merge unit
+LITH_GEN_U | Lithologic general unit
+LTH_RK_TYP | Lithologic Rock Type
+LAYERING | Layering/Rock stratum info from original source data for lithologic merge unit
+CR_GRN_SIZ | Crystal Grain/Size
+GETEC_PROP | Geotechnical Properties, Rock,Structural props for Lithologic merge units
+GN_LITH_TY | General Lithology Type
 
 The Shapefile is very large, 186 MB. I will try to simplify it and only maintain a few attribute columns.
 
@@ -111,11 +113,13 @@ Attribute data
 
 I will reduce the dataset to only contain the General Lithology Type(**GN_LITH_TY**), General Rock Type(**G_ROCK_TYP**), Geol. Merge Unit expressed by Genesis of the unit (**GEO_GENL_U**), Geologic Age of Merge Unit (**AGE_NAME**). I'll include RED_ID_CODE as well for a unique id. I'm not exactly sure what analysis I will be doing so I may reduce this further or add other fields to it later.
 
-mapshaper OregonGeologyMapUnitsPoly.shp -filter-fields REF_ID_COD,GN_LITH_TY,G_ROCK_TYP,GEO_GENL_U -o OregonGeologyMapUnitsPoly_reducefields.shp
+```mapshaper OregonGeologyMapUnitsPoly.shp -filter-fields REF_ID_COD,GN_LITH_TY,G_ROCK_TYP,GEO_GENL_U -o OregonGeologyMapUnitsPoly_reducefields.shp
+```
 
 Try again with Simplification, GeoJSON output, keep-shapes, and stats:
 
-mapshaper OregonGeologyMapUnitsPoly.shp -filter-fields REF_ID_COD,GN_LITH_TY,G_ROCK_TYP,GEO_GENL_U -simplify dp 20% -stats -keepshapes -o format=geojson OregonGeologyMapUnitsPoly_reducefields.json
+```mapshaper OregonGeologyMapUnitsPoly.shp -filter-fields REF_ID_COD,GN_LITH_TY,G_ROCK_TYP,GEO_GENL_U -simplify dp 20% -stats -keepshapes -o format=geojson OregonGeologyMapUnitsPoly_reducefields.json
+```
 
 keep-shapes: to make sure none dissapear.
 stats: for summary statistics
@@ -159,8 +163,9 @@ Attribute data
 -------------------+------------------------------
 ```
 
-mapshaper native_lands/indigenousTerritories.json -clip county_coos.json
+```mapshaper native_lands/indigenousTerritories.json -clip county_coos.json
  -o indg_territories.json
+ ```
 
 
 
@@ -171,15 +176,19 @@ mapshaper native_lands/indigenousTerritories.json -clip county_coos.json
 
 I want to reduce the complexity of the geologic data, so as to make bring it closer to the more large and broadly define indigenous territories polygons.
 
+```
 mapshaper coos_geology.json -dissolve fields=GN_LITH_TY -o coos_geology_gnlith_disslv.json
+```
 
-mapshaper coos_geology.json -dissolve fields=G_ROCK_TYP -o coos_geology_grocktp_disslv.json
+```mapshaper coos_geology.json -dissolve fields=G_ROCK_TYP -o coos_geology_grocktp_disslv.json
+```
 
 Rock type gives more detail and is more interesting.
 
 **Compare/Join Geology data to Native America Land**
 
-mapshaper indg_territories.json -join coos_geology_grocktp_disslv.json -calc 'rock_types = collect(G_ROCK_TYP)' -o indg_ter_rock_type.json
+```mapshaper indg_territories.json -join coos_geology_grocktp_disslv.json -calc 'rock_types = collect(G_ROCK_TYP)' -o indg_ter_rock_type.json
+```
 
 I'm having issues joining the two and maintaining all the rocktypes, it seems to only give it one.
 
