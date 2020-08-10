@@ -4,7 +4,7 @@
 
 **Planning and Data Collection**
 
-I'm interested in mapping Native American land in North America. I will also look into geology in similar areas and see if how different rock types may change based on native territories.
+I'm interested in mapping Native American land in North America. I will also look into geology in similar areas and see how different rock types may change based on native territories.
 
 Data Sources:
 
@@ -119,3 +119,72 @@ mapshaper OregonGeologyMapUnitsPoly.shp -filter-fields REF_ID_COD,GN_LITH_TY,G_R
 
 keep-shapes: to make sure none dissapear.
 stats: for summary statistics
+
+**Filter county shapefile to only Coos County**
+Also convert to wgs84, filter resultant fields.
+
+mapshaper counties.shp -info -filter-fields COUNTY -filter 'COUNTY == 033' -proj wgs84 -o format=geojson county_coos.json
+
+
+**Clip Geology to Single County**
+
+mapshaper or_geology.json -clip county_coos.json -o coos_geology.json
+
+**Clean Native American Land Data**
+
+```
+Devins-MBP:data_pre devin$ mapshaper native_lands/indigenousTerritories.json -info
+[info]
+==================================================
+Layer:    indigenousTerritories
+--------------------------------------------------
+Type:     polygon
+Records:  1,487
+Bounds:   -188.588688,-56.02359,178.54426,83.236426
+CRS:      [unknown]
+Source:   native_lands/indigenousTerritories.json
+
+Attribute data
+-------------------+------------------------------
+ Field             | First value
+-------------------+------------------------------
+ color             | '#9022FF'
+ description       | 'https://native-land.ca/maps/territories/acaxees-xiximes/'
+ FID               | '007d3821e00f3a136fa7285091646eff'
+ FrenchDescription | 'https://native-land.ca/maps/territories/acaxees-xiximes/'
+ FrenchName        | 'Acaxees'
+ Name              | 'Acaxees'
+ Slug              | 'acaxees-xiximes'
+
+-------------------+------------------------------
+```
+
+mapshaper native_lands/indigenousTerritories.json -clip county_coos.json
+ -o indg_territories.json
+
+
+
+
+
+
+**Simplify Geology to merge on General Lithology Type (GN_LITH_TY) or (G_ROCK_TYP)**
+
+I want to reduce the complexity of the geologic data, so as to make bring it closer to the more large and broadly define indigenous territories polygons.
+
+mapshaper coos_geology.json -dissolve fields=GN_LITH_TY -o coos_geology_gnlith_disslv.json
+
+mapshaper coos_geology.json -dissolve fields=G_ROCK_TYP -o coos_geology_grocktp_disslv.json
+
+Rock type gives more detail and is more interesting.
+
+**Compare/Join Geology data to Native America Land**
+
+mapshaper indg_territories.json -join coos_geology_grocktp_disslv.json -calc 'rock_types = collect(G_ROCK_TYP)' -o indg_ter_rock_type.json
+
+I'm having issues joining the two and maintaining all the rocktypes, it seems to only give it one.
+
+**Next.. Script or process the entire state**
+
+option 1: Create Script to perform the analysis for each county, then create a web map that lets you cycle through counties or indg_territories
+
+option2: run this process for the entire state, and let the user hove over the indigenous territories to see a list of rock types that are present in that area..
