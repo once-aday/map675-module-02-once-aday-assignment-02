@@ -2,9 +2,9 @@
 
 
 
-** Planning and Data Collection**
+**Planning and Data Collection**
 
-I'm interested in mapping Native American land in North America.
+I'm interested in mapping Native American land in North America. I will also look into geology in similar areas and see if how different rock types may change based on native territories.
 
 Data Sources:
 
@@ -30,7 +30,7 @@ Notes:
 
 Intersections Between Tribal Land, Geology, Oregon Counties...
 
-** Cleaning up and Analyzing the Geologic Data **
+**Cleaning up and Analyzing the Geologic Data**
 
 The OGDC-6, Oregon Geologic Data Compilation had to be downloaded as a Geodatabase archive, which I opened in QGIS.
 
@@ -60,7 +60,9 @@ GETEC_PROP : Geotechnical Properties, Rock,Structural props for Lithologic merge
 GN_LITH_TY : General Lithology Type
 
 The Shapefile is very large, 186 MB. I will try to simplify it and only maintain a few attribute columns.
-`Devins-MBP:data devin$ mapshaper OregonGeologyMapUnitsPoly.shp -info
+
+```
+Devins-MBP:data devin$ mapshaper OregonGeologyMapUnitsPoly.shp -info
 [info]
 ==================================================
 Layer:    OregonGeologyMapUnitsPoly
@@ -103,7 +105,8 @@ Attribute data
   TERRANE_GR | 'Harney Basin Volcanic Field'
   UNIT       | 'no data'
 
- ------------+-------------------------------------`
+ ------------+-------------------------------------
+ ```
 
 
 I will reduce the dataset to only contain the General Lithology Type(**GN_LITH_TY**), General Rock Type(**G_ROCK_TYP**), Geol. Merge Unit expressed by Genesis of the unit (**GEO_GENL_U**), Geologic Age of Merge Unit (**AGE_NAME**). I'll include RED_ID_CODE as well for a unique id. I'm not exactly sure what analysis I will be doing so I may reduce this further or add other fields to it later.
