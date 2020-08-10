@@ -113,12 +113,14 @@ Attribute data
 
 I will reduce the dataset to only contain the General Lithology Type(**GN_LITH_TY**), General Rock Type(**G_ROCK_TYP**), Geol. Merge Unit expressed by Genesis of the unit (**GEO_GENL_U**), Geologic Age of Merge Unit (**AGE_NAME**). I'll include RED_ID_CODE as well for a unique id. I'm not exactly sure what analysis I will be doing so I may reduce this further or add other fields to it later.
 
-```mapshaper OregonGeologyMapUnitsPoly.shp -filter-fields REF_ID_COD,GN_LITH_TY,G_ROCK_TYP,GEO_GENL_U -o OregonGeologyMapUnitsPoly_reducefields.shp
+```
+mapshaper OregonGeologyMapUnitsPoly.shp -filter-fields REF_ID_COD,GN_LITH_TY,G_ROCK_TYP,GEO_GENL_U -o OregonGeologyMapUnitsPoly_reducefields.shp
 ```
 
 Try again with Simplification, GeoJSON output, keep-shapes, and stats:
 
-```mapshaper OregonGeologyMapUnitsPoly.shp -filter-fields REF_ID_COD,GN_LITH_TY,G_ROCK_TYP,GEO_GENL_U -simplify dp 20% -stats -keepshapes -o format=geojson OregonGeologyMapUnitsPoly_reducefields.json
+```
+mapshaper OregonGeologyMapUnitsPoly.shp -filter-fields REF_ID_COD,GN_LITH_TY,G_ROCK_TYP,GEO_GENL_U -simplify dp 20% -stats -keepshapes -o format=geojson OregonGeologyMapUnitsPoly_reducefields.json
 ```
 
 keep-shapes: to make sure none dissapear.
@@ -163,9 +165,9 @@ Attribute data
 -------------------+------------------------------
 ```
 
-```mapshaper native_lands/indigenousTerritories.json -clip county_coos.json
- -o indg_territories.json
- ```
+```
+mapshaper native_lands/indigenousTerritories.json -clip county_coos.json -o indg_territories.json
+```
 
 
 
