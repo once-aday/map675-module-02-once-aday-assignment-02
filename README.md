@@ -170,10 +170,6 @@ mapshaper native_lands/indigenousTerritories.json -clip county_coos.json -o indg
 ```
 
 
-
-
-
-
 **Simplify Geology to merge on General Lithology Type (GN_LITH_TY) or (G_ROCK_TYP)**
 
 I want to reduce the complexity of the geologic data, so as to make bring it closer to the more large and broadly define indigenous territories polygons.
@@ -193,6 +189,37 @@ Rock type gives more detail and is more interesting.
 ```
 mapshaper indg_territories.json -join coos_geology_grocktp_disslv.json -calc 'rock_types = collect(G_ROCK_TYP)' -o indg_ter_rock_type.json
 ```
+
+mapshaper indg_territories.json -join coos_geology_grocktp_disslv.json -calc 'rock_type = collect(G_ROCK_TYP)' -o terr_rock_join_multi.json
+
+
+1. Join Geology to Territories
+mapshaper coos_geology_grocktp_disslv.json -join indg_territories.json  -o rock_terr_join.json
+
+2.
+Dissolve on Territory
+mapshaper rock_terr_join.json -dissolve multipart fields=Name,G_ROCK_TYP -o rock_terr_dissolve.json
+
+3.
+Get Stats on each territory
+
+Get All Territory Names
+mapshaper indg_territories.json -calc 'collect(Name)'
+
+```
+mapshaper rock_terr_dissolve.json -calc 'collect(G_ROCK_TYP)' where='Name=="Cowlitz"'
+
+[calc] collect(G_ROCK_TYP) where Name=="Cowlitz":  andesite,felsic composition lithologies,conglomerate,sandst
+one,mudflow breccia
+
+```
+
+Now I was able to get all of the rock types for the Cowlitz tribe in a single array. At this point, because my plan is to integrate this data with a javascript web map I will be doing the filtering of the different territories within the web map code rather than the commmand line. Mapshaper does not seem to have the ability to filter unique instances of feature attributes, or in the case, the "Name" attribute. No matter, I can do this in Javascript when I have the main dataset loaded into memory.
+
+My intention is to list all of the unique territories, and then have a secondary list with their associated rock types. I can decipher this information using basic javascript functions once rock_terr_dissolve.json is loaded.
+
+
+
 
 I'm having issues joining the two and maintaining all the rocktypes, it seems to only give it one.
 
