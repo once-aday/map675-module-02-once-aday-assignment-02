@@ -193,15 +193,17 @@ mapshaper indg_territories.json -join coos_geology_grocktp_disslv.json -calc 'ro
 mapshaper indg_territories.json -join coos_geology_grocktp_disslv.json -calc 'rock_type = collect(G_ROCK_TYP)' -o terr_rock_join_multi.json
 
 
+I'm having issues joining the two and maintaining all the rocktypes, it seems to only give it one.
+
+Solution:
+
 1. Join Geology to Territories
 mapshaper coos_geology_grocktp_disslv.json -join indg_territories.json  -o rock_terr_join.json
 
-2.
-Dissolve on Territory
+2. Dissolve on Territory
 mapshaper rock_terr_join.json -dissolve multipart fields=Name,G_ROCK_TYP -o rock_terr_dissolve.json
 
-3.
-Get Stats on each territory
+3. Get Stats on each territory
 
 Get All Territory Names
 mapshaper indg_territories.json -calc 'collect(Name)'
@@ -221,10 +223,87 @@ My intention is to list all of the unique territories, and then have a secondary
 
 
 
-I'm having issues joining the two and maintaining all the rocktypes, it seems to only give it one.
+
 
 **Next.. Script or process the entire state**
 
 option 1: Create Script to perform the analysis for each county, then create a web map that lets you cycle through counties or indg_territories
 
 option2: run this process for the entire state, and let the user hove over the indigenous territories to see a list of rock types that are present in that area..
+
+option3: Keep it to coos county
+
+
+**Update to plan**
+
+Instead of mapping rock types to indigenous territory, I am going to map rock types to counties
+
+Make OR geology GeoJSON; rocktypes, join to Counties
+
+mapshaper or_geology.json -dissolve fields=G_ROCK_TYP -o or_geology_rocktyp
+e.json
+
+mapshaper counties.shp -join or_geology_rocktype.json -calc 'rock_types = collect(G_ROCK_TYP)' -o or_counties_rock_type.json
+
+---- Third try -----
+
+Split counties into individual Shapefiles
+
+SETUP:
+mapshaper counties.shp name='' -split COUNTY_NAM -o format=geojson
+
+
+```
+Devins-MacBook-Pro:county_splits devin$ ls
+ADAMS.json                      KING.json                       TILLAMOOK.json
+ASOTIN.json                     KITSAP.json                     UMATILLA.json
+BAKER.json                      KITTITAS.json                   UNION.json
+BENTON.json                     KLAMATH.json                    WAHKIAKUM.json
+CHELAN.json                     KLICKITAT.json                  WALLA WALLA.json
+CLACKAMAS.json                  LAKE.json                       WALLOWA.json
+
+CLALLAM.json                    LANE.json                       WASCO.json
+CLARK.json                      LEWIS.json                      WASHINGTON.json
+CLATSOP.json                    LINCOLN.json                    WHATCOM.json
+COLUMBIA.json                   LINN.json                       WHEELER.json
+```
+
+REPEATABLE:
+clip geology by county
+
+mapshaper or_geology_rocktype.json -clip COOS.json -o county_geology.json
+
+join county name to geology
+
+mapshaper coos_geology.json -each 'county="coos"' -o coos_geology_clip_join.csv
+
+Generic: mapshaper coos_geology_clip_join.csv -each 'county="county"' -o county_geology_join.csv
+
+(I could potentially merge all back together into one )
+
+
+These were notes on how I might make this repeatable, more work would have to be done to export the csv, process the results and recombine all the rock types if I wanted that to happen before import into the web map.
+
+For now I am going to take Curry, coos, and douglass, jackson Counties, and run that process, import that into the map.
+
+
+mapshaper or_geology_rocktype.json -clip curry.json -o curry_geology.json
+
+mapshaper or_geology_rocktype.json -clip douglas.json -o douglas_geology.json
+
+mapshaper or_geology_rocktype.json -clip jackson.json -o jackson_geology.json
+
+mapshaper or_geology_rocktype.json -clip coos.json -o coos_geology.json
+
+Then I will make a POINT layer with the bedding angles on top of it, this will be clustered using leaflet.
+
+convert to geojson:
+
+mapshaper bedding.shp -o format=geojson
+
+
+------
+
+export geology layer that was dissolved on rock type to a csv so that i can get all unique rock types in order to make unique color codes for each. (For use in web map).
+
+mapshaper or_geology_rocktype.json -o or_geology_rocktype.csv delimiter=,

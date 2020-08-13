@@ -5,8 +5,15 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Lesson 02 template</title>
+  <title>Lesson 02</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.Default.css"> />
+  <link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.css"> />
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="libs/Leaflet.markercluster/leaflet.markercluster.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -27,12 +34,22 @@
 
   <div id="map"></div>
 
-  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <!-- <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script> -->
   <script>
+
+    // use D3 fetch to request data with async requests
+  const curryGeologyData = d3.json('data/all_geology.json');
+  const colorsData = d3.json('data/pastel_colors.json');
+  const beddingData = d3.json('data/bedding.json');
+
+
+
+  // use Promise to wait until data is all loaded
+  Promise.all([curryGeologyData, colorsData, beddingData]).then(drawMap);
     // map options
     const options = {
-      center: [37.265, -94.04],
-      zoom: 4
+      center: [42.7509, -124.05076],
+      zoom: 9
     }
     // instantiate Leaflet map
     const map = L.map('map', options);
@@ -42,6 +59,54 @@
       maxZoom: 18,
       attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
     }).addTo(map);
+    function drawMap(data) {
+      // function is called when Promise is fulfilled and data is ready
+
+      // inspect array of data
+      console.log(data);
+
+      // pull out separate data arrays and assign to variables
+      const curryGeologyData = data[0];
+      const colors = data[1];
+      const bedding = data[2];
+
+      L.geoJson(curryGeologyData).addTo(map);
+
+      // create a layerGroup with the geojson data
+      const curryGeologyLayerGroup = L.geoJson(curryGeologyData, {
+        style: function (feature) {
+          // use the colors object to style each polygon a unique color
+          return {
+            fillColor: colors.Pastel["10"][(''+feature.properties.color)[0]],
+            fillOpacity: 1,
+            color: 'black',
+            opacity: 1,
+            weight: .3
+          }
+        }
+      }).addTo(map);
+
+      // create new markerClusterGroup
+      const markers = L.markerClusterGroup();
+
+      // loop through all our signals features
+      bedding.features.forEach(function(feature) {
+        // create a new Leaflet marker for each
+        let coords = feature.geometry.coordinates;
+        let marker = L.marker([coords[1], coords[0]]);
+
+        // bind a tooltip to the marker
+        marker.bindTooltip("Dip Angle: " + feature.properties.Dip_Amount);
+
+        // add the marker to the markerClusterGroup
+        markers.addLayer(marker);
+
+      });
+      // add the markerClusterGroup to the map
+      map.addLayer(markers);
+
+
+    }
 
   </script>
 </body>
