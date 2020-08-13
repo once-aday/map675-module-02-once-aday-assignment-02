@@ -304,6 +304,47 @@ mapshaper bedding.shp -o format=geojson
 
 ------
 
-export geology layer that was dissolved on rock type to a csv so that i can get all unique rock types in order to make unique color codes for each. (For use in web map).
+export geology layer that was dissolved on rock type to a csv so that I could get all unique rock types for reference.
 
 mapshaper or_geology_rocktype.json -o or_geology_rocktype.csv delimiter=,
+
+
+merge the 4 geology layers into one.
+
+mapshaper coos_geology.json curry_geology.json douglas_geology.json jackson_geo
+logy.json combine-files -merge-layers -o all_geology.json
+
+Switch to only Curry and Coos COUNTY
+
+mapshaper coos_geology.json curry_geology.json combine-files -merge-layers -o all_geology.json
+
+Try random colors:
+
+```
+style: function (feature) {
+  // use the colors object to style each polygon a unique color
+  return {
+    color: colors.Pastel["10"][Math.floor((Math.random() * 10) + 1)],
+    fillOpacity: .6
+  }
+}
+```
+
+assign a number to each color in the geology GeoJSON
+a
+```
+mapshaper all_geology.json -each 'color=this.id' -o all_geology_num.json
+[o] Wrote all_geology_num.json
+```
+
+replace all_geology with all_geology_num
+```
+cp all_geology_num.json all_geology.json
+```
+
+Clip all bedding outside of all_geology_num
+
+```
+mapshaper bedding.json -clip all_geology.json -o bedding_clip.json
+[o] Wrote bedding_clip.json
+```
