@@ -279,9 +279,10 @@
         // create a new Leaflet marker for each
         let coords = feature.geometry.coordinates;
         let marker = L.marker([coords[1], coords[0]]);
+        console.log(feature)
 
         // bind a tooltip to the marker
-        marker.bindTooltip("Bedding Angle: " + feature.properties._Amount + "°");
+        marker.bindTooltip("Bedding Angle: " + feature.properties.Dip_Amount + "°");
 
         // add the marker to the markerClusterGroup
         markers.addLayer(marker);
