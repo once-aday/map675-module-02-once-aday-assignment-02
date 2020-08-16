@@ -128,12 +128,12 @@
   const colorsData = d3.json('data/pastel_colors.json');
   const beddingData = d3.json('data/bedding.json');
 
-  const geologyLegendItems = d3.json('data/rock_type_legend.json')
+  // const geologyLegendItems = d3.json('data/rock_type_legend.json')
 
 
 
   // use Promise to wait until data is all loaded
-  Promise.all([curryGeologyData, colorsData, beddingData, geologyLegendItems]).then(drawMap);
+  Promise.all([curryGeologyData, colorsData, beddingData]).then(drawMap);
     // map options
     const options = {
       center: [42.7509, -124.05076],
@@ -163,19 +163,19 @@
       const colors = data[1];
       const bedding = data[2];
 
-      geologyLegendItemsData = data[3]
+      // geologyLegendItemsData = data[3]
       // store a reference to the HTML list
       const legendList = $('#legend-list');
 
       // loop through the features and create a new
       // list item for each feature in the legend
-      console.log(geologyLegendItemsData.features.length)
-      for(let i = 0; i <= geologyLegendItemsData.features.length -1; i++) {
-        let color_num = (''+geologyLegendItemsData['features'][i]['properties']['color'])[0]
-        let rock_type_name = String((''+geologyLegendItemsData['features'][i]['properties']['G_ROCK_TYP'])).split(" ").join("-")
-        console.log(rock_type_name)
+      // console.log(geologyLegendItemsData.features.length)
+      for(let i = 0; i <= curryGeologyData.features.length -1; i++) {
+        let color_num = (''+curryGeologyData['features'][i]['properties']['color'])[0]
+        let rock_type_name = String((''+curryGeologyData['features'][i]['properties']['G_ROCK_TYP'])).split(" ").join("-")
+        // console.log(rock_type_name)
           // legendList.append('<li class="legend-item" id="rock_type-' + i + '"><a style="color:' + colors.Pastel["10"][i -1] + '" href="#">'+ i + ' (<span></span>)</a></li>');
-          legendList.append('<li class="legend-item" id="rock_type-' + rock_type_name + '"><a style="color:' + colors.Pastel["10"][color_num] + '" href="#">'+ (''+geologyLegendItemsData['features'][i]['properties']['G_ROCK_TYP']).toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.substring(1)).join(' ') + ' </a></li>');
+          legendList.append('<li class="legend-item" id="rock_type-' + rock_type_name + '"><a style="color:' + colors.Pastel["10"][color_num] + '" href="#">'+ (''+curryGeologyData['features'][i]['properties']['G_ROCK_TYP']).toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.substring(1)).join(' ') + ' </a></li>');
           // console.log(geologyLegendItemsData['features'][i]['properties'])
           //
           // console.log((''+geologyLegendItemsData['features'][i]['properties']['color'])[0])
@@ -196,8 +196,8 @@
               // if the rocktype* id matches the one we're mousing over
               // console.log(layer)
               if(String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-") === rockType) {
-                console.log(rockType)
-                console.log(layer.feature.properties.G_ROCK_TYP)
+                // console.log(rockType)
+                // console.log(layer.feature.properties.G_ROCK_TYP)
                   // change the layer style
                   layer.setStyle({
                       fillOpacity: .8,
@@ -237,8 +237,8 @@
            });
            // select the cooresponding list item
            // and add the highlight class to make bold
-           console.log(String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-"))
-           console.log(layer.feature.properties.color)
+           // console.log(String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-"))
+           // console.log(layer.feature.properties.color)
            $('#rock_type-' + String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-")).addClass('highlight');
            $('#rock_type-' + String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-")).addClass('underline');
            // $('#rock-type-' + (''+geologyLegendItemsData['features'][0]['properties']['G_ROCK_TYP'])).addClass('highlight');
@@ -281,7 +281,7 @@
         let marker = L.marker([coords[1], coords[0]]);
 
         // bind a tooltip to the marker
-        marker.bindTooltip("Bedding Angle: " + feature.properties.Dip_Amount + "°");
+        marker.bindTooltip("Bedding Angle: " + feature.properties._Amount + "°");
 
         // add the marker to the markerClusterGroup
         markers.addLayer(marker);
