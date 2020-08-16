@@ -348,3 +348,9 @@ Clip all bedding outside of all_geology_num
 mapshaper bedding.json -clip all_geology.json -o bedding_clip.json
 [o] Wrote bedding_clip.json
 ```
+
+Create json object to be read to generate legend in web map.
+
+```
+mapshaper all_geology.json -dissolve G_ROCK_TYP copy-fields=color -o rock_type_legend.json
+```

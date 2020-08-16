@@ -1,0 +1,33 @@
+color,G_ROCK_TYP
+0,basalt
+1,mixed lithologies
+2,mixed grained sediments
+3,slope mudstone
+4,shelf sandstone
+5,deltaic sandstone
+6,fine grained sediments
+7,no data
+8,andesite
+9,dacite
+10,felsic composition lithologies
+11,greenstone
+12,chert
+13,serpentinite
+14,mafic composition lithologies
+15,turbidite
+16,pillow lavas
+17,sandstone
+18,blueschist
+19,coarse grained sediments
+20,ultramafic composition lithologies
+21,mudstone
+22,conglomerate
+23,siltstone
+27,tuffaceous sedimentary rocks
+34,marble
+37,intermediate composition lithologies
+44,schist
+47,amphibolite
+50,gneiss
+51,hornfels
+52,metamorphic rocks

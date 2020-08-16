@@ -27,11 +27,75 @@
       top: 0;
       bottom: 0;
     }
+    #ui {
+        position: absolute;
+        z-index: 1000; /* place above map */
+        bottom: 18px;
+        right: 18px;
+        padding: 6px;
+        background: rgba(256,256,256,.9);
+        height: 450px;
+        width: 200px;
+        overflow-y: scroll;
+    }
+    #ui-title {
+        position: relative;
+        z-index: 1000; /* place above map */
+        top: 18px;
+        /* right: 18px; */
+        padding: 12px;
+        background: rgba(256,256,256,.9);
+        height: 50px;
+        /* width: 100%; */
+        /* overflow-y: scroll; */
+    }
+
+    #ui ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    #ui li {
+        margin-bottom: 6px;
+    }
+    #ui a {
+        text-decoration: none;
+    }
+    #ui a:hover {
+        font-weight: bold;
+    }
+    .highlight {
+        font-weight: bold;
+    }
+    #legend-list {
+      position: absolute;
+      /* top: 100px; */
+      width: 100%;
+      font-weight: 400;
+      font-size: 12px;
+      font-family: 'Open Sans', sans-serif;
+      color: rgb(87, 135, 253);
+      text-align: left;
+      /* padding-right: 40px; */
+      text-decoration: none;
+      overflow-y: scroll;
+
+    }
+
   </style>
 </head>
 
 <body>
 
+  <div id="ui-title">
+    <h3>Geology and Bedding<br>Curry and Coos Counties, Oregon</h3>
+  </div>
+
+  <div id="ui">
+
+      <!-- <div id ="legend-list-box"> -->
+      <ul id="legend-list"></ul>
+      <!-- </div> -->
+  </div>
   <div id="map"></div>
 
   <!-- <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script> -->
@@ -42,14 +106,17 @@
   const colorsData = d3.json('data/pastel_colors.json');
   const beddingData = d3.json('data/bedding.json');
 
+  const geologyLegendItems = d3.json('data/rock_type_legend.json')
+
 
 
   // use Promise to wait until data is all loaded
-  Promise.all([curryGeologyData, colorsData, beddingData]).then(drawMap);
+  Promise.all([curryGeologyData, colorsData, beddingData, geologyLegendItems]).then(drawMap);
     // map options
     const options = {
       center: [42.7509, -124.05076],
-      zoom: 9
+      zoom: 9,
+      zoomControl: false,
     }
     // instantiate Leaflet map
     const map = L.map('map', options);
@@ -70,6 +137,23 @@
       const colors = data[1];
       const bedding = data[2];
 
+      geologyLegendItemsData = data[3]
+      // store a reference to the HTML list
+      const legendList = $('#legend-list');
+
+      // loop through the features and create a new
+      // list item for each feature in the legend
+      console.log(geologyLegendItemsData.features.length)
+      for(let i = 0; i <= geologyLegendItemsData.features.length -1; i++) {
+        let color_num = (''+geologyLegendItemsData['features'][i]['properties']['color'])[0]
+        let rock_type_name = (''+geologyLegendItemsData['features'][i]['properties']['G_ROCK_TYP'])
+          // legendList.append('<li class="legend-item" id="rock_type-' + i + '"><a style="color:' + colors.Pastel["10"][i -1] + '" href="#">'+ i + ' (<span></span>)</a></li>');
+          legendList.append('<li class="legend-item" id="rock_type-' + rock_type_name + '"><a style="color:' + colors.Pastel["10"][color_num] + '" href="#">'+ rock_type_name + ' </a></li>');
+          console.log(geologyLegendItemsData['features'][i]['properties'])
+
+          console.log((''+geologyLegendItemsData['features'][i]['properties']['color'])[0])
+      }
+
       L.geoJson(curryGeologyData).addTo(map);
 
       // create a layerGroup with the geojson data
@@ -83,7 +167,29 @@
             opacity: 1,
             weight: .3
           }
-        }
+        },
+        onEachFeature(feature, layer) {
+         //when mousing over a polygon layer
+         layer.on('mouseover', function () {
+           // provide a visual affordance
+           this.setStyle({
+             fillOpacity: .8
+           });
+           // select the cooresponding list item
+           // and add the highlight class to make bold
+           $('#rock-type-' + (''+geologyLegendItemsData['features'][0]['properties']['G_ROCK_TYP'])).addClass('highlight');
+         })
+         layer.on('mouseout', function () {
+           // provide a visual affordance
+           this.setStyle({
+             fillOpacity: 1
+           });
+           // select the cooresponding list item
+           // and add the highlight class to make bold
+           $('#rock-type-' + (''+geologyLegendItemsData['features'][0]['properties']['G_ROCK_TYP'])).addClass('highlight');
+         })
+
+       }
       }).addTo(map);
 
       // create new markerClusterGroup
