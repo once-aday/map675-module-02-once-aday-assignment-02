@@ -236,7 +236,7 @@ option3: Keep it to coos county
 
 **Update to plan**
 
-Instead of mapping rock types to indigenous territory, I am going to map rock types to counties
+Instead of mapping rock types to indigenous territory, I am going to map rock types based on counties
 
 Make OR geology GeoJSON; rocktypes, join to Counties
 
@@ -358,3 +358,20 @@ mapshaper all_geology.json -dissolve G_ROCK_TYP copy-fields=color -o rock_type_l
 modify the addClass highlight to also perform an underline and overline.
 
 https://api.jquery.com/addClass/
+
+
+I spent a lot of time debugging an issue with rock types that have have empty spaces in the name. The div ID seemed to not be readable by jquery,css, or the leaflet process when there were rock types with multiple words.
+
+So I implemented a simple string method chain to remove spaces and replace them wish dashes when appropriate. Basically, everywhere other than the legend text.
+
+**Conclusion and Notes**
+
+This turned out to be a difficult project. I think one of the main reasons was because I didn't really have a specific purpose or end goal in mind when I started processing data. Mapping native American land was intriguing but I did not plan out a strategy for a compelling final map. I ended up not using the native territories dataset because I didn't find any relevant companion datasets to go with it. So in the future I will outline out ALL of the datasets I think will be needed for the final product before going so deep into manipulating a single one in isolation.
+
+However during that process of manipulating the native territories I went very deep into the mapshaper library, using a huge swath of the available commands within the CMD interface. I feel like I have a good grasp of mapshaper now and understand its power but also some of it's limitations. I was not able to do complex calculations on attribute tables, when I wanted to use the -calc flag with spatial joins it wasn't able to carry over all the attributes I needed in the way I needed them. Perhaps there is some advance javascript code that could be piped into mapshaper but I wasn't able to get to that. I ended up having to do some work arounds and then rely on the javascript code *from the web map* rather than doing it within mapshaper. This is not a problem, but took me a while to realize that would be necessary.
+
+I also ended up using quite a bit of example code from lesson 2. Given the time I was taking for the data prep portion I felt I would stick to that code and modify as I go. Since my datasets were very different than the example code I ended up having to debug and rework a lot of what was there. Overall more outlining and planning next time should help a lot. I should clearly define and segment the stages of map building:
+1. The ideation; coming up with an interesting idea for a map, and what the final map product should generally look like
+2. Thinking through and acquiring all of the datasets necessary (before heavy data cleansing)
+3. Cleansing/Manipulating the data with forethought on the tools to be used
+4. Thinking through the libraries/modules for writing the actual web map code.
