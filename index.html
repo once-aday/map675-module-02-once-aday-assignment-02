@@ -34,7 +34,7 @@
         right: 18px;
         padding: 6px;
         background: rgba(256,256,256,.9);
-        height: 450px;
+        height: 100%;
         width: 200px;
         overflow-y: scroll;
     }
@@ -46,8 +46,33 @@
         padding: 12px;
         background: rgba(256,256,256,.9);
         height: 50px;
+        width: 325px;
         /* width: 100%; */
         /* overflow-y: scroll; */
+    }
+
+    #ui-layer-toggle {
+        position: absolute;
+        z-index: 1000; /* place above map */
+        bottom: 18px;
+        /* right: 18px; */
+        padding: 12px;
+        margin-left: 25px;
+        background: rgba(256,256,256,.9);
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        cursor: pointer;
+        width: 78px;
+        /* height: 50px; */
+        /* width: 50px; */
+        /* width: 100%; */
+        /* overflow-y: scroll; */
+    }
+    #eye-icon img {
+      width:50%; /* you can use % */
+      height: auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     #ui ul {
@@ -65,6 +90,7 @@
     }
     .highlight {
         font-weight: bold;
+        text-decoration: underline overline black;
     }
     #legend-list {
       position: absolute;
@@ -88,6 +114,11 @@
 
   <div id="ui-title">
     <h3>Geology and Bedding<br>Curry and Coos Counties, Oregon</h3>
+  </div>
+
+  <div id="ui-layer-toggle">
+    <div id='eye-icon'><img id="eye" src="icons/eye.png"></div>
+    <h3>Geology</h3>
   </div>
 
   <div id="ui">
@@ -118,6 +149,8 @@
       zoom: 9,
       zoomControl: false,
     }
+
+
     // instantiate Leaflet map
     const map = L.map('map', options);
 
@@ -154,7 +187,38 @@
           console.log((''+geologyLegendItemsData['features'][i]['properties']['color'])[0])
       }
 
-      L.geoJson(curryGeologyData).addTo(map);
+      // select all the list items and on mouseover
+      $('.legend-item').on('mouseover', function() {
+          // extract the specific number from the specific item
+          // being moused over
+          var rockTypeExtract = this.id.replace('rock_type-', '');
+          // send this as an argument to the highlightDistrict function
+          highlightRockType(rockTypeExtract);
+      });
+
+      function highlightRockType(rockType) {
+          // loop through the districts polygons
+          curryGeologyLayerGroup.eachLayer(function(layer) {
+              // if the district id matches the one we're mousing over
+              console.log(rockType)
+              if(layer.feature.properties.G_ROCK_TYP === rockType) {
+                  // change the layer style
+                  layer.setStyle({
+                      fillOpacity: .8,
+                      color: 'black',
+                      // weight: .7
+                  }).bringToFront();
+              } else {
+                  // return to original
+                  layer.setStyle({
+                      fillOpacity: 1,
+                      color: 'black',
+                      // weight: .3
+                  });
+              }
+          });
+      }
+
 
       // create a layerGroup with the geojson data
       const curryGeologyLayerGroup = L.geoJson(curryGeologyData, {
@@ -177,7 +241,10 @@
            });
            // select the cooresponding list item
            // and add the highlight class to make bold
-           $('#rock-type-' + (''+geologyLegendItemsData['features'][0]['properties']['G_ROCK_TYP'])).addClass('highlight');
+           console.log(layer.feature.properties.G_ROCK_TYP)
+           $('#rock_type-' + layer.feature.properties.G_ROCK_TYP).addClass('highlight');
+           $('#rock_type-' + layer.feature.properties.G_ROCK_TYP).addClass('underline');
+           // $('#rock-type-' + (''+geologyLegendItemsData['features'][0]['properties']['G_ROCK_TYP'])).addClass('highlight');
          })
          layer.on('mouseout', function () {
            // provide a visual affordance
@@ -186,11 +253,25 @@
            });
            // select the cooresponding list item
            // and add the highlight class to make bold
-           $('#rock-type-' + (''+geologyLegendItemsData['features'][0]['properties']['G_ROCK_TYP'])).addClass('highlight');
+           $('#rock_type-' + layer.feature.properties.G_ROCK_TYP).removeClass('highlight');
          })
 
        }
       }).addTo(map);
+
+      $("#ui-layer-toggle").click(function(event) {
+          event.preventDefault();
+          if(map.hasLayer(curryGeologyLayerGroup)) {
+              $(this).removeClass('selected');
+              map.removeLayer(curryGeologyLayerGroup);
+              $("#eye").attr("src","icons/eye-closed.png");
+
+          } else {
+              map.addLayer(curryGeologyLayerGroup);
+              $(this).addClass('selected');
+              $("#eye").attr("src","icons/eye.png");
+         }
+      });
 
       // create new markerClusterGroup
       const markers = L.markerClusterGroup();

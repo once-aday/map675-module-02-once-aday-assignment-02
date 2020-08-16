@@ -354,3 +354,7 @@ Create json object to be read to generate legend in web map.
 ```
 mapshaper all_geology.json -dissolve G_ROCK_TYP copy-fields=color -o rock_type_legend.json
 ```
+
+modify the addClass highlight to also perform an underline and overline.
+
+https://api.jquery.com/addClass/
