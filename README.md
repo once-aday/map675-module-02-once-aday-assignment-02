@@ -374,4 +374,4 @@ I also ended up using quite a bit of example code from lesson 2. Given the time 
 1. The ideation; coming up with an interesting idea for a map, and what the final map product should generally look like
 2. Thinking through and acquiring all of the datasets necessary (before heavy data cleansing)
 3. Cleansing/Manipulating the data with forethought on the tools to be used
-4. Thinking through the libraries/modules for writing the actual web map code.
+4. Thinking through more intentionally the libraries/modules for writing the actual web map code.
