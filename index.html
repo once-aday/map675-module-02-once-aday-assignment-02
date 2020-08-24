@@ -7,7 +7,6 @@
 
   <title>Lesson 02</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
   <link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.Default.css"> />
   <link rel="stylesheet" href="libs/Leaflet.markercluster/MarkerCluster.css"> />
   <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -27,43 +26,45 @@
       top: 0;
       bottom: 0;
     }
+
     #ui {
-        position: absolute;
-        z-index: 1000; /* place above map */
-        bottom: 18px;
-        right: 18px;
-        /* padding: 6px; */
-        background: rgba(0,0,0,.8);
-        height: 100%;
-        /* padding: 10px; */
-        top: 0px;
-        width: 220px;
-        overflow-y: scroll;
+      position: absolute;
+      z-index: 1000;
+      bottom: 18px;
+      right: 18px;
+      background: rgba(0, 0, 0, .8);
+      height: 100%;
+      top: 0px;
+      overflow-y: scroll;
     }
-    #ui-title {
-        position: relative;
-        z-index: 1000; /* place above map */
-        top: 18px;
-        padding: 12px;
-        background: white;
-        color: black;
-        height: 50px;
-        width: 325px;
+
+    h1 {
+      position: absolute;
+      z-index: 1000;
+      top: 0;
+      left: 18px;
+      background: rgba(0, 0, 0, .8);
+      color: white;
+      padding: 6px 8px;
+      font-size: 1.6em;
+      font-weight: normal;
     }
 
     #ui-layer-toggle {
-        position: absolute;
-        z-index: 1000;
-        bottom: 18px;
-        padding: 12px;
-        margin-left: 25px;
-        background: rgba(256,256,256,.9);
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        cursor: pointer;
-        width: 78px;
+      position: absolute;
+      z-index: 1000;
+      bottom: 18px;
+      padding: 12px;
+      margin-left: 25px;
+      background: rgba(256, 256, 256, .9);
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      cursor: pointer;
+      width: 78px;
     }
+
     #eye-icon img {
-      width:50%; /* you can use % */
+      width: 50%;
+      /* you can use % */
       height: auto;
       display: block;
       margin-left: auto;
@@ -71,41 +72,44 @@
     }
 
     #ui ul {
-        list-style-type: none;
-        padding: 0;
+      list-style-type: none;
+      padding: 0;
     }
+
     #ui li {
-        margin-bottom: 6px;
+      margin-bottom: 6px;
     }
+
     #ui a {
-        text-decoration: none;
+      text-decoration: none;
     }
+
     #ui a:hover {
-        font-weight: bold;
+      font-weight: bold;
     }
+
     .highlight {
-        font-weight: bold;
-        text-decoration: underline overline black;
+      font-weight: bold;
+      text-decoration: underline overline black;
     }
+
     #legend-list {
       width: 100%;
       font-weight: 400;
-      font-size: 12px;
+      font-size: 1em;
       font-family: 'Open Sans', sans-serif;
       color: rgb(87, 135, 253);
       text-decoration: none;
       overflow-y: scroll;
-      text-align: center;
+      margin-left: 12px;
     }
-
   </style>
 </head>
 
 <body>
 
-  <div id="ui-title">
-    <h3>Geology and Bedding<br>Curry and Coos Counties, Oregon</h3>
-  </div>
+  <h1>Geology and Bedding<br>Curry and Coos Counties, Oregon</h1>
+
 
   <div id="ui-layer-toggle">
     <div id='eye-icon'><img id="eye" src="icons/eye.png"></div>
@@ -113,10 +117,7 @@
   </div>
 
   <div id="ui">
-
-      <!-- <div id ="legend-list-box"> -->
-      <ul id="legend-list"></ul>
-      <!-- </div> -->
+    <ul id="legend-list"></ul>
   </div>
   <div id="map"></div>
 
@@ -124,16 +125,16 @@
   <script>
 
     // use D3 fetch to request data with async requests
-  const curryGeologyData = d3.json('data/rock_type_legend.json'); // was all_geology.json
-  const colorsData = d3.json('data/pastel_colors.json');
-  const beddingData = d3.json('data/bedding.json');
+    const curryGeologyData = d3.json('data/rock_type_legend.json'); // was all_geology.json
+    const colorsData = d3.json('data/pastel_colors.json');
+    const beddingData = d3.json('data/bedding.json');
 
-  // const geologyLegendItems = d3.json('data/rock_type_legend.json')
+    // const geologyLegendItems = d3.json('data/rock_type_legend.json')
 
 
 
-  // use Promise to wait until data is all loaded
-  Promise.all([curryGeologyData, colorsData, beddingData]).then(drawMap);
+    // use Promise to wait until data is all loaded
+    Promise.all([curryGeologyData, colorsData, beddingData]).then(drawMap);
     // map options
     const options = {
       center: [42.7509, -124.05076],
@@ -170,49 +171,49 @@
       // loop through the features and create a new
       // list item for each feature in the legend
       // console.log(geologyLegendItemsData.features.length)
-      for(let i = 0; i <= curryGeologyData.features.length -1; i++) {
-        let color_num = (''+curryGeologyData['features'][i]['properties']['color'])[0]
-        let rock_type_name = String((''+curryGeologyData['features'][i]['properties']['G_ROCK_TYP'])).split(" ").join("-")
+      for (let i = 0; i <= curryGeologyData.features.length - 1; i++) {
+        let color_num = ('' + curryGeologyData['features'][i]['properties']['color'])[0]
+        let rock_type_name = String(('' + curryGeologyData['features'][i]['properties']['G_ROCK_TYP'])).split(" ").join("-")
         // console.log(rock_type_name)
-          // legendList.append('<li class="legend-item" id="rock_type-' + i + '"><a style="color:' + colors.Pastel["10"][i -1] + '" href="#">'+ i + ' (<span></span>)</a></li>');
-          legendList.append('<li class="legend-item" id="rock_type-' + rock_type_name + '"><a style="color:' + colors.Pastel["10"][color_num] + '" href="#">'+ (''+curryGeologyData['features'][i]['properties']['G_ROCK_TYP']).toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.substring(1)).join(' ') + ' </a></li>');
-          // console.log(geologyLegendItemsData['features'][i]['properties'])
-          //
-          // console.log((''+geologyLegendItemsData['features'][i]['properties']['color'])[0])
+        // legendList.append('<li class="legend-item" id="rock_type-' + i + '"><a style="color:' + colors.Pastel["10"][i -1] + '" href="#">'+ i + ' (<span></span>)</a></li>');
+        legendList.append('<li class="legend-item" id="rock_type-' + rock_type_name + '"><a style="color:' + colors.Pastel["10"][color_num] + '" href="#">' + ('' + curryGeologyData['features'][i]['properties']['G_ROCK_TYP']).toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.substring(1)).join(' ') + ' </a></li>');
+        // console.log(geologyLegendItemsData['features'][i]['properties'])
+        //
+        // console.log((''+geologyLegendItemsData['features'][i]['properties']['color'])[0])
       }
 
       // select all the list items and on mouseover
-      $('.legend-item').on('mouseover', function() {
-          // extract the specific number from the specific item
-          // being moused over
-          var rockTypeExtract = this.id.replace('rock_type-', '');
-          // send this as an argument to the highlightDistrict function
-          highlightRockType(rockTypeExtract);
+      $('.legend-item').on('mouseover', function () {
+        // extract the specific number from the specific item
+        // being moused over
+        var rockTypeExtract = this.id.replace('rock_type-', '');
+        // send this as an argument to the highlightDistrict function
+        highlightRockType(rockTypeExtract);
       });
 
       function highlightRockType(rockType) {
-          // loop through the districts polygons
-          curryGeologyLayerGroup.eachLayer(function(layer) {
-              // if the rocktype* id matches the one we're mousing over
-              // console.log(layer)
-              if(String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-") === rockType) {
-                // console.log(rockType)
-                // console.log(layer.feature.properties.G_ROCK_TYP)
-                  // change the layer style
-                  layer.setStyle({
-                      fillOpacity: .8,
-                      color: 'black',
-                      // weight: .7
-                  }).bringToFront();
-              } else {
-                  // return to original
-                  layer.setStyle({
-                      fillOpacity: 1,
-                      color: 'black',
-                      // weight: .3
-                  });
-              }
-          });
+        // loop through the districts polygons
+        curryGeologyLayerGroup.eachLayer(function (layer) {
+          // if the rocktype* id matches the one we're mousing over
+          // console.log(layer)
+          if (String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-") === rockType) {
+            // console.log(rockType)
+            // console.log(layer.feature.properties.G_ROCK_TYP)
+            // change the layer style
+            layer.setStyle({
+              fillOpacity: .8,
+              color: 'black',
+              // weight: .7
+            }).bringToFront();
+          } else {
+            // return to original
+            layer.setStyle({
+              fillOpacity: 1,
+              color: 'black',
+              // weight: .3
+            });
+          }
+        });
       }
 
 
@@ -221,7 +222,7 @@
         style: function (feature) {
           // use the colors object to style each polygon a unique color
           return {
-            fillColor: colors.Pastel["10"][(''+feature.properties.color)[0]],
+            fillColor: colors.Pastel["10"][('' + feature.properties.color)[0]],
             fillOpacity: 1,
             color: 'black',
             opacity: 1,
@@ -229,53 +230,53 @@
           }
         },
         onEachFeature(feature, layer) {
-         //when mousing over a polygon layer
-         layer.on('mouseover', function () {
-           // provide a visual affordance
-           this.setStyle({
-             fillOpacity: .8
-           });
-           // select the cooresponding list item
-           // and add the highlight class to make bold
-           // console.log(String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-"))
-           // console.log(layer.feature.properties.color)
-           $('#rock_type-' + String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-")).addClass('highlight');
-           $('#rock_type-' + String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-")).addClass('underline');
-           // $('#rock-type-' + (''+geologyLegendItemsData['features'][0]['properties']['G_ROCK_TYP'])).addClass('highlight');
-         })
-         layer.on('mouseout', function () {
-           // provide a visual affordance
-           this.setStyle({
-             fillOpacity: 1
-           });
-           // select the cooresponding list item
-           // and add the highlight class to make bold
-           $('#rock_type-' + String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-")).removeClass('highlight');
-           $('#rock_type-' + String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-")).removeClass('underline');
-         })
+          //when mousing over a polygon layer
+          layer.on('mouseover', function () {
+            // provide a visual affordance
+            this.setStyle({
+              fillOpacity: .8
+            });
+            // select the cooresponding list item
+            // and add the highlight class to make bold
+            // console.log(String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-"))
+            // console.log(layer.feature.properties.color)
+            $('#rock_type-' + String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-")).addClass('highlight');
+            $('#rock_type-' + String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-")).addClass('underline');
+            // $('#rock-type-' + (''+geologyLegendItemsData['features'][0]['properties']['G_ROCK_TYP'])).addClass('highlight');
+          })
+          layer.on('mouseout', function () {
+            // provide a visual affordance
+            this.setStyle({
+              fillOpacity: 1
+            });
+            // select the cooresponding list item
+            // and add the highlight class to make bold
+            $('#rock_type-' + String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-")).removeClass('highlight');
+            $('#rock_type-' + String(layer.feature.properties.G_ROCK_TYP).split(" ").join("-")).removeClass('underline');
+          })
 
-       }
+        }
       }).addTo(map);
 
-      $("#ui-layer-toggle").click(function(event) {
-          event.preventDefault();
-          if(map.hasLayer(curryGeologyLayerGroup)) {
-              $(this).removeClass('selected');
-              map.removeLayer(curryGeologyLayerGroup);
-              $("#eye").attr("src","icons/eye-closed.png");
+      $("#ui-layer-toggle").click(function (event) {
+        event.preventDefault();
+        if (map.hasLayer(curryGeologyLayerGroup)) {
+          $(this).removeClass('selected');
+          map.removeLayer(curryGeologyLayerGroup);
+          $("#eye").attr("src", "icons/eye-closed.png");
 
-          } else {
-              map.addLayer(curryGeologyLayerGroup);
-              $(this).addClass('selected');
-              $("#eye").attr("src","icons/eye.png");
-         }
+        } else {
+          map.addLayer(curryGeologyLayerGroup);
+          $(this).addClass('selected');
+          $("#eye").attr("src", "icons/eye.png");
+        }
       });
 
       // create new markerClusterGroup
       const markers = L.markerClusterGroup();
 
       // loop through all our signals features
-      bedding.features.forEach(function(feature) {
+      bedding.features.forEach(function (feature) {
         // create a new Leaflet marker for each
         let coords = feature.geometry.coordinates;
         let marker = L.marker([coords[1], coords[0]]);
